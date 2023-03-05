@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        if(Input.GetKeyDown("space") && isGrounded())
+        if(Input.GetKeyDown("w") && isGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
         }
