@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private float Speed = 8f;
     public float JumpPower = 20f;
     private bool isFacingRight = true;
+    private bool DoubleJump = false;
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform GroundCheck;
@@ -20,6 +21,12 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown("w") && isGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
+            DoubleJump = true;
+        }
+        else if(Input.GetKeyDown("w") && DoubleJump)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, JumpPower);
+            DoubleJump = false;
         }
         Flip();
     }
