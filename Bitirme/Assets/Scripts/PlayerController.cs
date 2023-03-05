@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        Application.targetFrameRate = 47;
     }
 
     void Update()
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
             counting = true;
             counter = 0;
         }
-        else if(Input.GetKeyDown("w") && DoubleJump)
+        else if(Input.GetKeyDown("w") && DoubleJump && counter > 15)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             DoubleJump = false;
