@@ -31,7 +31,6 @@ public class NewControlls : MonoBehaviour
             animator.SetTrigger("Jump");
             animator.SetBool("Grounded", false);
             isGrounded = false;
-            Debug.Log("Jumped");
             StartCoroutine(DoubleJumpOn());
         }
         else if (Input.GetKeyDown("w") && DoubleJump)
@@ -67,14 +66,16 @@ public class NewControlls : MonoBehaviour
         {
             DoubleJump = false;
         }
+        if (col.gameObject.tag == "Pickup")
+        {
+            col.gameObject.SetActive(false);
+        }
     }
 
     IEnumerator DoubleJumpOn()
     {
-        Debug.Log("DoubleJumpOn Entered");
         yield return new WaitForSeconds(DoubleJumpTimer);
         DoubleJump = true;
-        Debug.Log(DoubleJump);
     }
 
     void Flip()
