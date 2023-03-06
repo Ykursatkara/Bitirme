@@ -389,7 +389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CategoryHash: 0
   m_labelHash: 0
-  m_SpriteKey: 3.6191374e-27
+  m_SpriteKey: 0
 --- !u!212 &1166223273
 SpriteRenderer:
   m_ObjectHideFlags: 0
