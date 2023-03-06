@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class NewControlls : MonoBehaviour
 {
     Animator animator;
 
     private float Horizontal;
     private float Speed = 8f;
     public float JumpPower = 20f;
+    public float DoubleJumpTimer = 0.2f;
     private bool isFacingRight = true;
     private bool DoubleJump = false;
+    private bool isGrounded = false;
 
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform GroundCheck;
-    [SerializeField] private LayerMask GroundLayer;
 
     void Start()
     {
@@ -25,14 +25,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        if(Input.GetKeyDown("w") && isGrounded())
+        if (Input.GetKeyDown("w") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
-            DoubleJump = true;
             animator.SetTrigger("Jump");
             animator.SetBool("Grounded", false);
+            isGrounded = false;
+            Debug.Log("Jumped");
+            StartCoroutine(DoubleJumpOn());
         }
-        else if(Input.GetKeyDown("w") && DoubleJump)
+        else if (Input.GetKeyDown("w") && DoubleJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             DoubleJump = false;
@@ -42,7 +44,7 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("IsRunning", true);
         }
-        else if(Horizontal == 0)
+        else if (Horizontal == 0)
         {
             animator.SetBool("IsRunning", false);
         }
@@ -54,20 +56,30 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
     }
 
-    bool isGrounded()
-    {
-        return Physics2D.OverlapCircle(GroundCheck.position, 0.2f, GroundLayer);
-    }
-
     void OnCollisionEnter2D(Collision2D col)
     {
-        Debug.Log("OnCollisionEnter2D");
-        animator.SetBool("Grounded", true);
+        if(col.gameObject.tag == "Ground")
+        {
+            isGrounded = true;
+            animator.SetBool("Grounded", true);
+        }
+        if(col.gameObject.tag == "Platform")
+        {
+            DoubleJump = false;
+        }
+    }
+
+    IEnumerator DoubleJumpOn()
+    {
+        Debug.Log("DoubleJumpOn Entered");
+        yield return new WaitForSeconds(DoubleJumpTimer);
+        DoubleJump = true;
+        Debug.Log(DoubleJump);
     }
 
     void Flip()
     {
-        if((isFacingRight && Horizontal < 0f) || (!isFacingRight && Horizontal > 0f))
+        if ((isFacingRight && Horizontal < 0f) || (!isFacingRight && Horizontal > 0f))
         {
             isFacingRight = !isFacingRight;
             Vector3 localScale = transform.localScale;
@@ -75,5 +87,5 @@ public class PlayerController : MonoBehaviour
             transform.localScale = localScale;
         }
     }
- 
+
 }
