@@ -15,6 +15,7 @@ public class NewControlls : MonoBehaviour
     private bool isFacingRight = true;
     private bool DoubleJump = false;
     private bool isGrounded = false;
+    private bool Climbing = false;
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Text PointsText;
@@ -28,7 +29,7 @@ public class NewControlls : MonoBehaviour
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        if (Input.GetKeyDown("w") && isGrounded)
+        if (Input.GetKeyDown("w") && isGrounded && !Climbing)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             animator.SetTrigger("Jump");
@@ -36,11 +37,16 @@ public class NewControlls : MonoBehaviour
             isGrounded = false;
             StartCoroutine(DoubleJumpOn());
         }
-        else if (Input.GetKeyDown("w") && DoubleJump)
+        else if (Input.GetKeyDown("w") && DoubleJump && !Climbing)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             DoubleJump = false;
             animator.SetTrigger("Jump");
+        }
+        else if (Input.GetKey("w") && Climbing)
+        {
+            animator.SetBool("Climbing", true);
+            rb.velocity = new Vector2(rb.velocity.x, JumpPower/2);
         }
         if (Horizontal != 0)
         {
@@ -78,6 +84,19 @@ public class NewControlls : MonoBehaviour
             Points++;
             trigger.gameObject.SetActive(false);
             PointsText.text = Points.ToString("F1");
+        }
+        if(trigger.gameObject.tag == "Ladder")
+        {
+            Climbing = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D trigger)
+    {
+        if (trigger.gameObject.tag == "Ladder")
+        {
+            Climbing = false;
+            animator.SetBool("Climbing", false);
         }
     }
 
