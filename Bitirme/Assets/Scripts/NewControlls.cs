@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewControlls : MonoBehaviour
 {
     Animator animator;
 
+    private double Points = 0;
     private float Horizontal;
     private float Speed = 8f;
     public float JumpPower = 20f;
@@ -15,6 +17,7 @@ public class NewControlls : MonoBehaviour
     private bool isGrounded = false;
 
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Text PointsText;
 
     void Start()
     {
@@ -66,9 +69,15 @@ public class NewControlls : MonoBehaviour
         {
             DoubleJump = false;
         }
-        if (col.gameObject.tag == "Pickup")
+    }
+
+    private void OnTriggerEnter2D(Collider2D trigger)
+    {
+        if(trigger.gameObject.tag == "Pickup")
         {
-            col.gameObject.SetActive(false);
+            Points++;
+            trigger.gameObject.SetActive(false);
+            PointsText.text = Points.ToString("F1");
         }
     }
 
