@@ -66,9 +66,14 @@ public class NewControlls : MonoBehaviour
         {
             DoubleJump = false;
         }
-        if (col.gameObject.tag == "Pickup")
+    }
+
+    private void OnTriggerEnter2D(Collider2D trigger)
+    {
+        Debug.Log("test");
+        if(trigger.gameObject.tag == "Pickup")
         {
-            col.gameObject.SetActive(false);
+            trigger.gameObject.SetActive(false);
         }
     }
 
