@@ -7,6 +7,10 @@ public class NewControlls : MonoBehaviour
 {
     Animator animator;
 
+    Collider2D cocuk_collider;
+
+    public GameObject DeathText;
+
     private double Points = 0;
     private float Horizontal;
     private float Speed = 8f;
@@ -16,6 +20,7 @@ public class NewControlls : MonoBehaviour
     private bool DoubleJump = false;
     private bool isGrounded = false;
     private bool Climbing = false;
+    private bool isDying = false;
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Text PointsText;
@@ -23,13 +28,14 @@ public class NewControlls : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        cocuk_collider = GetComponent<Collider2D>();
         Application.targetFrameRate = 47;
     }
 
     void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
-        if (Input.GetKeyDown("w") && isGrounded && !Climbing)
+        if (Input.GetKeyDown("w") && isGrounded && !Climbing && !isDying)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             animator.SetTrigger("Jump");
@@ -37,13 +43,13 @@ public class NewControlls : MonoBehaviour
             isGrounded = false;
             StartCoroutine(DoubleJumpOn());
         }
-        else if (Input.GetKeyDown("w") && DoubleJump && !Climbing)
+        else if (Input.GetKeyDown("w") && DoubleJump && !Climbing && !isDying)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             DoubleJump = false;
             animator.SetTrigger("Jump");
         }
-        else if (Input.GetKey("w") && Climbing)
+        else if (Input.GetKey("w") && Climbing && !isDying)
         {
             animator.SetBool("Climbing", true);
             rb.velocity = new Vector2(rb.velocity.x, JumpPower/2);
@@ -56,12 +62,16 @@ public class NewControlls : MonoBehaviour
         {
             animator.SetBool("IsRunning", false);
         }
+        if(Input.GetKeyDown("space"))
+        {
+            Death();
+        }
         Flip();
     }
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
+            rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -108,13 +118,23 @@ public class NewControlls : MonoBehaviour
 
     void Flip()
     {
-        if ((isFacingRight && Horizontal < 0f) || (!isFacingRight && Horizontal > 0f))
+        if ((isFacingRight && Horizontal < 0f) || (!isFacingRight && Horizontal > 0f) && !isDying)
         {
             isFacingRight = !isFacingRight;
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
+    }
+
+    void Death()
+    {
+        isDying = true;
+        Speed = 0;
+        rb.velocity = new Vector2(rb.velocity.x, JumpPower * 1.5f);
+        cocuk_collider.isTrigger = true;
+        animator.SetTrigger("Dead");
+        DeathText.SetActive(true);
     }
 
 }
