@@ -21,7 +21,6 @@ public class CameraFollow : MonoBehaviour
         {
             playerPosition = new Vector3(playerPosition.x - offset, playerPosition.y, playerPosition.z);
         }
-
         transform.position = Vector3.Lerp(transform.position, playerPosition, offsetSmoothing * Time.deltaTime);
     }
 }

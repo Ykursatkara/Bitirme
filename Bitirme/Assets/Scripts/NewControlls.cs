@@ -11,19 +11,21 @@ public class NewControlls : MonoBehaviour
 
     public GameObject DeathText;
 
-    private double Points = 0;
     private float Horizontal;
     private float Speed = 8f;
     public float JumpPower = 20f;
     public float DoubleJumpTimer = 0.2f;
+    private string PowerUpType;
     private bool isFacingRight = true;
     private bool DoubleJump = false;
+    private bool DoubleJumped = false;
     private bool isGrounded = false;
     private bool Climbing = false;
     private bool isDying = false;
+    private bool isDashing = false;
 
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Text PointsText;
+    [SerializeField] private Text PowerUpText;
 
     void Start()
     {
@@ -34,6 +36,10 @@ public class NewControlls : MonoBehaviour
 
     void Update()
     {
+        if(isDashing)
+        {
+            return;
+        }
         Horizontal = Input.GetAxisRaw("Horizontal");
         if (Input.GetKeyDown("w") && isGrounded && !Climbing && !isDying)
         {
@@ -47,6 +53,7 @@ public class NewControlls : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpPower);
             DoubleJump = false;
+            DoubleJumped = true;
             animator.SetTrigger("Jump");
         }
         else if (Input.GetKey("w") && Climbing && !isDying)
@@ -64,6 +71,10 @@ public class NewControlls : MonoBehaviour
         }
         if(Input.GetKeyDown("space"))
         {
+            UsePowerUp();
+        }
+        if(Input.GetKeyDown("k"))
+        {
             Death();
         }
         Flip();
@@ -71,7 +82,11 @@ public class NewControlls : MonoBehaviour
 
     void FixedUpdate()
     {
-            rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
+        if (isDashing)
+        {
+            return;
+        }
+        rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -80,6 +95,7 @@ public class NewControlls : MonoBehaviour
         {
             isGrounded = true;
             animator.SetBool("Grounded", true);
+            DoubleJumped = false;
         }
         if(col.gameObject.tag == "Platform")
         {
@@ -89,11 +105,17 @@ public class NewControlls : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D trigger)
     {
-        if(trigger.gameObject.tag == "Pickup")
+        if(trigger.gameObject.tag == "PowerUp_TripleJump")
         {
-            Points++;
             trigger.gameObject.SetActive(false);
-            PointsText.text = Points.ToString("F1");
+            PowerUpText.text = "Triple Jump";
+            PowerUpType = "Triple Jump";
+        }
+        else if (trigger.gameObject.tag == "PowerUp_Dash")
+        {
+            trigger.gameObject.SetActive(false);
+            PowerUpText.text = "Dash";
+            PowerUpType = "Dash";
         }
         if(trigger.gameObject.tag == "Ladder")
         {
@@ -114,6 +136,36 @@ public class NewControlls : MonoBehaviour
     {
         yield return new WaitForSeconds(DoubleJumpTimer);
         DoubleJump = true;
+    }
+
+    void UsePowerUp()
+    {
+        if(PowerUpType == "Triple Jump" && DoubleJumped)
+        {
+            Debug.Log("Triple Jumped");
+            rb.velocity = new Vector2(rb.velocity.x, JumpPower);
+            animator.SetTrigger("Jump");
+            PowerUpType = "";
+            PowerUpText.text = "";
+        }
+        if (PowerUpType == "Dash" && Horizontal != 0)
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+        rb.gravityScale = 0f;
+        rb.velocity = new Vector2(transform.localScale.x * 2f, 0f);
+        animator.SetTrigger("Dash");
+        PowerUpType = "";
+        PowerUpText.text = "";
+        yield return new WaitForSeconds(0.5f);
+        animator.SetTrigger("DashEnd");
+        isDashing = false;
+        rb.gravityScale = 1f;
     }
 
     void Flip()
