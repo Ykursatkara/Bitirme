@@ -161,10 +161,30 @@ public class NewControlls : MonoBehaviour
         }
         else if(PowerUpType == "Box")
         {
-            GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 1 ,transform.localPosition.y) , Quaternion.identity);
-            NewBox.SetActive(true);
-            PowerUpType = "";
-            PowerUpText.text = "";
+            if(Horizontal != 0)
+            {
+                GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - Horizontal*2 , transform.localPosition.y - 0.313f), Quaternion.identity);
+                NewBox.SetActive(true);
+                PowerUpType = "";
+                PowerUpText.text = "";
+            }
+            else
+            {
+                if(isFacingRight)
+                {
+                    GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 2, transform.localPosition.y - 0.313f), Quaternion.identity);
+                    NewBox.SetActive(true);
+                    PowerUpType = "";
+                    PowerUpText.text = "";
+                }
+                else
+                {
+                    GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x + 2, transform.localPosition.y - 0.313f), Quaternion.identity);
+                    NewBox.SetActive(true);
+                    PowerUpType = "";
+                    PowerUpText.text = "";
+                }
+            }
         }
     }
 
