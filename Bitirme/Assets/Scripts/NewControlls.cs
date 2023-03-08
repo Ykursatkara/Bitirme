@@ -143,7 +143,7 @@ public class NewControlls : MonoBehaviour
         if(PowerUpType == "Triple Jump" && DoubleJumped)
         {
             Debug.Log("Triple Jumped");
-            rb.velocity = new Vector2(rb.velocity.x, JumpPower);
+            rb.velocity = new Vector2(rb.velocity.x, JumpPower* 1.5f);
             animator.SetTrigger("Jump");
             PowerUpType = "";
             PowerUpText.text = "";
