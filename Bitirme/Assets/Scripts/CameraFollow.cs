@@ -11,7 +11,7 @@ public class CameraFollow : MonoBehaviour
 
     void FixedUpdate()
     {
-        playerPosition = new Vector3(player.transform.position.x, transform.position.y, transform.position.z);
+        playerPosition = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
 
         if (player.transform.localScale.x > 0f)
         {
