@@ -11,6 +11,7 @@ public class NewControlls : MonoBehaviour
 
     public GameObject DeathText;
     public GameObject PowerUp_Box;
+    public GameObject PowerUp_Box_Outline;
 
     private float Horizontal;
     private float Speed = 8f;
@@ -94,6 +95,7 @@ public class NewControlls : MonoBehaviour
     {
         if(col.gameObject.tag == "Ground")
         {
+            Debug.Log("Grounded");
             isGrounded = true;
             animator.SetBool("Grounded", true);
             DoubleJumped = false;
@@ -108,12 +110,14 @@ public class NewControlls : MonoBehaviour
     {
         if(trigger.gameObject.tag == "PowerUp_TripleJump")
         {
+            PowerUp_Box_Outline.SetActive(false);
             trigger.gameObject.SetActive(false);
             PowerUpText.text = "Triple Jump";
             PowerUpType = "Triple Jump";
         }
         else if(trigger.gameObject.tag == "PowerUp_Dash")
         {
+            PowerUp_Box_Outline.SetActive(false);
             trigger.gameObject.SetActive(false);
             PowerUpText.text = "Dash";
             PowerUpType = "Dash";
@@ -122,7 +126,7 @@ public class NewControlls : MonoBehaviour
         {
             trigger.gameObject.SetActive(false);
             PowerUpText.text = "Box";
-            PowerUpType = "Box";
+            PowerUpType = "Box_Outline";
         }
         if(trigger.gameObject.tag == "Ladder")
         {
@@ -159,32 +163,15 @@ public class NewControlls : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
-        else if(PowerUpType == "Box")
+        else if(PowerUpType == "Box_Outline")
         {
-            if(Horizontal != 0)
-            {
-                GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - Horizontal*2 , transform.localPosition.y - 0.313f), Quaternion.identity);
-                NewBox.SetActive(true);
-                PowerUpType = "";
-                PowerUpText.text = "";
-            }
-            else
-            {
-                if(isFacingRight)
-                {
-                    GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 2, transform.localPosition.y - 0.313f), Quaternion.identity);
-                    NewBox.SetActive(true);
-                    PowerUpType = "";
-                    PowerUpText.text = "";
-                }
-                else
-                {
-                    GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x + 2, transform.localPosition.y - 0.313f), Quaternion.identity);
-                    NewBox.SetActive(true);
-                    PowerUpType = "";
-                    PowerUpText.text = "";
-                }
-            }
+            PowerUp_Box_Outline.SetActive(true);
+            PowerUpType = "Put_Box";
+        }
+        else if(PowerUpType == "Put_Box")
+        {
+            PowerUp_Box_Outline.SetActive(false);
+            PutBox();
         }
     }
 
@@ -200,6 +187,34 @@ public class NewControlls : MonoBehaviour
         animator.SetTrigger("DashEnd");
         isDashing = false;
         rb.gravityScale = 1f;
+    }
+
+    void PutBox()
+    {
+        if (Horizontal != 0)
+        {
+            GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - Horizontal * 2, transform.localPosition.y - 0.313f), Quaternion.identity);
+            NewBox.SetActive(true);
+            PowerUpType = "";
+            PowerUpText.text = "";
+        }
+        else
+        {
+            if (isFacingRight)
+            {
+                GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 2, transform.localPosition.y - 0.313f), Quaternion.identity);
+                NewBox.SetActive(true);
+                PowerUpType = "";
+                PowerUpText.text = "";
+            }
+            else
+            {
+                GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x + 2, transform.localPosition.y - 0.313f), Quaternion.identity);
+                NewBox.SetActive(true);
+                PowerUpType = "";
+                PowerUpText.text = "";
+            }
+        }
     }
 
     void Flip()
