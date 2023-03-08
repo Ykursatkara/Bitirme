@@ -163,6 +163,8 @@ public class NewControlls : MonoBehaviour
         {
             GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 1 ,transform.localPosition.y) , Quaternion.identity);
             NewBox.SetActive(true);
+            PowerUpType = "";
+            PowerUpText.text = "";
         }
     }
 
