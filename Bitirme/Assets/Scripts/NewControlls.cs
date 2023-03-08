@@ -10,6 +10,7 @@ public class NewControlls : MonoBehaviour
     Collider2D cocuk_collider;
 
     public GameObject DeathText;
+    public GameObject PowerUp_Box;
 
     private float Horizontal;
     private float Speed = 8f;
@@ -111,11 +112,17 @@ public class NewControlls : MonoBehaviour
             PowerUpText.text = "Triple Jump";
             PowerUpType = "Triple Jump";
         }
-        else if (trigger.gameObject.tag == "PowerUp_Dash")
+        else if(trigger.gameObject.tag == "PowerUp_Dash")
         {
             trigger.gameObject.SetActive(false);
             PowerUpText.text = "Dash";
             PowerUpType = "Dash";
+        }
+        else if(trigger.gameObject.tag == "PowerUp_Box")
+        {
+            trigger.gameObject.SetActive(false);
+            PowerUpText.text = "Box";
+            PowerUpType = "Box";
         }
         if(trigger.gameObject.tag == "Ladder")
         {
@@ -148,9 +155,14 @@ public class NewControlls : MonoBehaviour
             PowerUpType = "";
             PowerUpText.text = "";
         }
-        if (PowerUpType == "Dash" && Horizontal != 0)
+        else if (PowerUpType == "Dash" && Horizontal != 0)
         {
             StartCoroutine(Dash());
+        }
+        else if(PowerUpType == "Box")
+        {
+            GameObject NewBox = Instantiate(PowerUp_Box, new Vector2(transform.localPosition.x - 1 ,transform.localPosition.y) , Quaternion.identity);
+            NewBox.SetActive(true);
         }
     }
 

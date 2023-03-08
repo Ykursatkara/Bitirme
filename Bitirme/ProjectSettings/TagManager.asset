@@ -9,6 +9,7 @@ TagManager:
   - Ladder
   - PowerUp_TripleJump
   - PowerUp_Dash
+  - PowerUp_Box
   layers:
   - Default
   - TransparentFX
