@@ -71,7 +71,7 @@ public class NewControlls : MonoBehaviour
         {
             animator.SetBool("IsRunning", false);
         }
-        if(Input.GetKeyDown("space"))
+        if(Input.GetKeyDown("space") && !isDying)
         {
             UsePowerUp();
         }
